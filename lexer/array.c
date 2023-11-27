@@ -1,31 +1,34 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strdup.c                                        :+:      :+:    :+:   */
+/*   array.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mgur <mgur@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/09/07 04:13:54 by mgur              #+#    #+#             */
-/*   Updated: 2023/09/07 04:13:56 by mgur             ###   ########.fr       */
+/*   Created: 2023/09/07 04:11:57 by mgur              #+#    #+#             */
+/*   Updated: 2023/09/07 04:11:59 by mgur             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-char	*ft_strdup(const char *str)
+char	**push_array(char **arg_arr, char *str)
 {
 	int		i;
-	char	*dest;
+	int		len;
+	char	**new_arr;
 
-	dest = (char *)malloc((ft_strlen(str) + 1) * (sizeof(char)));
-	if (!dest)
-		return (NULL);
 	i = 0;
-	while (str[i])
+	len = 0;
+	while (arg_arr && arg_arr[len])
+		len++;
+	new_arr = ft_calloc(sizeof(char *), len + 2);
+	while (i < len)
 	{
-		dest[i] = str[i];
+		new_arr[i] = arg_arr[i];
 		i++;
 	}
-	dest[i] = '\0';
-	return (dest);
+	new_arr[i] = str;
+	free(arg_arr);
+	return (new_arr);
 }

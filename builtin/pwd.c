@@ -1,31 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strdup.c                                        :+:      :+:    :+:   */
+/*   pwd.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mgur <mgur@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/09/07 04:13:54 by mgur              #+#    #+#             */
-/*   Updated: 2023/09/07 04:13:56 by mgur             ###   ########.fr       */
+/*   Created: 2023/09/07 04:11:00 by mgur              #+#    #+#             */
+/*   Updated: 2023/09/07 04:11:04 by mgur             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-char	*ft_strdup(const char *str)
+void	builtin_pwd(int cntrl)
 {
-	int		i;
-	char	*dest;
+	char	*result;
 
-	dest = (char *)malloc((ft_strlen(str) + 1) * (sizeof(char)));
-	if (!dest)
-		return (NULL);
-	i = 0;
-	while (str[i])
+	result = getcwd((void *)0, 0);
+	if (!result)
+		perror("minishell ");
+	else
+		printf("%s\n", result);
+	free(result);
+	if (cntrl == 0)
 	{
-		dest[i] = str[i];
-		i++;
+		exit(errno);
 	}
-	dest[i] = '\0';
-	return (dest);
 }

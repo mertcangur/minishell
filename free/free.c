@@ -1,31 +1,44 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strdup.c                                        :+:      :+:    :+:   */
+/*   free.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mgur <mgur@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/09/07 04:13:54 by mgur              #+#    #+#             */
-/*   Updated: 2023/09/07 04:13:56 by mgur             ###   ########.fr       */
+/*   Created: 2023/09/07 04:11:52 by mgur              #+#    #+#             */
+/*   Updated: 2023/09/07 04:11:54 by mgur             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-char	*ft_strdup(const char *str)
+void	free_array(char **arr)
 {
-	int		i;
-	char	*dest;
+	int	i;
 
-	dest = (char *)malloc((ft_strlen(str) + 1) * (sizeof(char)));
-	if (!dest)
-		return (NULL);
 	i = 0;
-	while (str[i])
+	while (arr[i])
 	{
-		dest[i] = str[i];
+		free(arr[i]);
 		i++;
 	}
-	dest[i] = '\0';
-	return (dest);
+	free(arr);
+}
+
+void	free_process(void)
+{
+	t_process	*tmp;
+	t_process	*process;
+
+	process = g_ms.process;
+	if (!process)
+		return ;
+	while (process)
+	{
+		free_array(process->execute);
+		free_array(process->redirects);
+		tmp = process;
+		process = process->next;
+		free(tmp);
+	}
 }

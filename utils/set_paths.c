@@ -1,31 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strdup.c                                        :+:      :+:    :+:   */
+/*   set_paths.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mgur <mgur@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/09/07 04:13:54 by mgur              #+#    #+#             */
-/*   Updated: 2023/09/07 04:13:56 by mgur             ###   ########.fr       */
+/*   Created: 2023/09/07 04:14:58 by mgur              #+#    #+#             */
+/*   Updated: 2023/09/07 09:05:07 by mgur             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-char	*ft_strdup(const char *str)
+void	set_paths(void)
 {
-	int		i;
-	char	*dest;
+	char	*path;
 
-	dest = (char *)malloc((ft_strlen(str) + 1) * (sizeof(char)));
-	if (!dest)
-		return (NULL);
-	i = 0;
-	while (str[i])
-	{
-		dest[i] = str[i];
-		i++;
-	}
-	dest[i] = '\0';
-	return (dest);
+	if (g_ms.paths)
+		free_array(g_ms.paths);
+	path = get_env("PATH");
+	if (!(*path))
+		g_ms.paths = NULL;
+	else
+		g_ms.paths = ft_split(path, ':');
+	free(path);
 }

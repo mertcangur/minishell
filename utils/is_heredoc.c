@@ -1,31 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strdup.c                                        :+:      :+:    :+:   */
+/*   is_heredoc.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mgur <mgur@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/09/07 04:13:54 by mgur              #+#    #+#             */
-/*   Updated: 2023/09/07 04:13:56 by mgur             ###   ########.fr       */
+/*   Created: 2023/09/07 04:14:38 by mgur              #+#    #+#             */
+/*   Updated: 2023/09/07 04:14:41 by mgur             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-char	*ft_strdup(const char *str)
+int	contain_heredoc(t_process *process)
 {
-	int		i;
-	char	*dest;
+	int	i;
 
-	dest = (char *)malloc((ft_strlen(str) + 1) * (sizeof(char)));
-	if (!dest)
-		return (NULL);
 	i = 0;
-	while (str[i])
+	while (process->redirects[i])
 	{
-		dest[i] = str[i];
+		if (is_operator(process->redirects[i]) == HERE_DOC)
+			return (TRUE);
 		i++;
 	}
-	dest[i] = '\0';
-	return (dest);
+	return (FALSE);
 }

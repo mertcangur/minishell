@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   minishell.h                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mgur <mgur@student.42.fr>                  +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/09/07 04:15:11 by mgur              #+#    #+#             */
+/*   Updated: 2023/09/07 12:54:04 by mgur             ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef MINISHELL_H
 # define MINISHELL_H
 # include <stdio.h>
@@ -16,11 +28,10 @@
 
 # define TRUE 1
 # define FALSE 0
-# define DOLLAR_OP '$'
-# define DOUBLE_QUOTE '"'
-# define SINGLE_QUOTE '\''
 # define CHILD_PROCESS 0
 # define MAIN_PROCESS 1
+# define DOUBLE_QUOTE 34
+# define SINGLE_QUOTE 96
 # define REPLACE 1
 # define APPEND 0
 
@@ -57,7 +68,6 @@ typedef struct s_process
 {
 	pid_t				pid;
 	int					fd[2];
-	int					heredoc_fd[2];
 	char				**execute;
 	char				**redirects;
 	struct s_process	*prev;
@@ -66,9 +76,12 @@ typedef struct s_process
 
 typedef struct s_minishell
 {
+	int			ex_flag;
 	int			parent_pid;
+	int			heredoc_fd[2];
 	int			process_count;
 	int			ignore;
+	int			child_flag;
 	char		**env;
 	char		**paths;
 	t_token		*token;
@@ -77,24 +90,83 @@ typedef struct s_minishell
 
 extern t_minishell	g_ms;
 
-
-void tokenn(char *str);
-int is_operator(char *str);
-char	*ft_strdup(const char *str);
-void	*ft_calloc(size_t count, size_t size);
-void	*ft_memset(void *b, int c, size_t n);
-size_t	ft_strlen(const char *s);
-void parse_token_string(char **str);
-void skip_whitespace(char **str,char **head);
-void without_quote_parse(char **str);
-void find_end_pos(char **str,char type);
-void	*ft_memcpy(void *dest, const void *src, size_t n);
-char	*ft_substr(char const *str, unsigned int start, size_t len);
-int	is_whitespace(char c);
-int token_addback(t_token **token,t_token *new_token ,int plus);
-t_token *init_token(char *str,enum e_ttype type);
-
-
-
-
+int			get_all_inputs(t_process *process, int cntrl);
+int			lexer(t_token *token, t_process *process);
+void		builtin_pwd(int cntrl);
+int			env_len(void);
+int			is_parent(void);
+void		start_cmd(void);
+void		set_paths(void);
+char		*ft_itoa(int n);
+void		free_token(void);
+void		input(char *file, int cntrl);
+void		builtin_env(int cntrl);
+char		*dollar(char *str);
+void		free_process(void);
+void		close_all_fd(void);
+char		*get_env(char *str);
+t_process	*init_process(void);
+void		token_err(int type);
+int			tokenize(char *str);
+void		set_env(char **env);
+char		*get_path(char *cmd);
+int			is_whitespace(char c);
+void		close_heredoc_fd(void);
+void		command_err(char *str);
+void		free_array(char **arr);
+void		heredoc(char *endline);
+void		no_file_err(char *str);
+int			is_operator(char *str);
+int			check_dollar(char *str);
+char		*clean_quote(char *str);
+int			ft_atoi(const char *str);
+void		directory_err(char *str);
+size_t		ft_strlen(const char *s);
+void		builtin_cd(char **input, int cntrl);
+int			is_builtin(char *command);
+void		builtin_exit(char **input);
+void		builtin_echo(char **input, int cntrl);
+char		*parse_dollar_op(char *str, int i);
+char		*ft_strdup(const char *str);
+void		builtin_unset(char **input, int cntrl);
+void		run_builtin(char **execute, int cntrl);
+void		run_cmd(t_process *process);
+void		output(char *file, int mode);
+void		builtin_export(char **input, int cntrl);
+int			parse_token_string(char **str, int len);
+char		*ft_strchr(const char *s, int c);
+void		run_redirects(t_process *process);
+void		set_all_outputs(t_process *process);
+int			contain_heredoc(t_process *process);
+char		**ft_split(char const *str, char c);
+void		*ft_calloc(size_t count, size_t size);
+char		**push_array(char **arg_arr, char *str);
+void		push_new_str(char **new_str, char *str);
+t_token		*init_token(char *str, enum e_ttype type);
+char		*ft_strjoin(char const *s1, char const *s2);
+int			ft_strcmp(const char *str1, const char *str2);
+int			ft_strncmp(const char *str1, const char *str2, size_t n);
+char		*ft_substr(char const *str, unsigned int start, size_t len);
+int			token_addback(t_token **token, t_token *new_token, int plus);
+void		process_addback(t_process **process, t_process *new_process);
+int			err_check(char *str, char *input, int cntrl);
+int			is_include(char *str, int cntrl);
+int			env_len2(char *str, int flag, int cntrl);
+int			exp_error(char *str, int cntrl);
+int			ft_strcomp(char *s1);
+void		builtin_export(char **input, int cntrl);
+int			check_env(char *str, char *env, char *input, int cntrl);
+void		builtin_export(char **input, int cntrl);
+void		builtin_env2(int cntrl);
+void		env_extra(char **env, int i, int j, int flag);
+void		export_while(char **input, int cntrl);
+void		add_env(char *str, int cntrl);
+void		for_token_string(int len, char **str, char *head);
+void		print_env(char **env);
+int			lexer_extra(t_token *token);
+int			extra(char **str);
+int			find_end_pos(char **str, char type);
+int			lexer_start(void);
+void		free_append(void);
+void		sig_quit_handler(int signum);
 #endif

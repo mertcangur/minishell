@@ -1,31 +1,34 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strdup.c                                        :+:      :+:    :+:   */
+/*   close.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mgur <mgur@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/09/07 04:13:54 by mgur              #+#    #+#             */
-/*   Updated: 2023/09/07 04:13:56 by mgur             ###   ########.fr       */
+/*   Created: 2023/09/07 04:11:16 by mgur              #+#    #+#             */
+/*   Updated: 2023/09/07 04:11:18 by mgur             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-char	*ft_strdup(const char *str)
+void	close_all_fd(void)
 {
-	int		i;
-	char	*dest;
+	t_process	*process;
 
-	dest = (char *)malloc((ft_strlen(str) + 1) * (sizeof(char)));
-	if (!dest)
-		return (NULL);
-	i = 0;
-	while (str[i])
+	process = g_ms.process;
+	while (process)
 	{
-		dest[i] = str[i];
-		i++;
+		close(process->fd[0]);
+		close(process->fd[1]);
+		process = process->next;
 	}
-	dest[i] = '\0';
-	return (dest);
+}
+
+void	close_heredoc_fd(void)
+{
+	if (g_ms.heredoc_fd[0] > 2)
+		close(g_ms.heredoc_fd[0]);
+	if (g_ms.heredoc_fd[1] > 2)
+		close(g_ms.heredoc_fd[1]);
 }

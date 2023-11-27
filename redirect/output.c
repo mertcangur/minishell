@@ -1,31 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strdup.c                                        :+:      :+:    :+:   */
+/*   output.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mgur <mgur@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/09/07 04:13:54 by mgur              #+#    #+#             */
-/*   Updated: 2023/09/07 04:13:56 by mgur             ###   ########.fr       */
+/*   Created: 2023/09/07 04:12:38 by mgur              #+#    #+#             */
+/*   Updated: 2023/09/07 04:12:40 by mgur             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-char	*ft_strdup(const char *str)
+void	output(char *file, int mode)
 {
-	int		i;
-	char	*dest;
+	int		fd;
 
-	dest = (char *)malloc((ft_strlen(str) + 1) * (sizeof(char)));
-	if (!dest)
-		return (NULL);
-	i = 0;
-	while (str[i])
+	fd = 0;
+	if (mode == REPLACE)
+		fd = open(file, O_CREAT | O_WRONLY | O_TRUNC, 0777);
+	else if (mode == APPEND)
+		fd = open(file, O_CREAT | O_WRONLY | O_APPEND, 0777);
+	if (fd == -1)
 	{
-		dest[i] = str[i];
-		i++;
+		perror("minishell");
 	}
-	dest[i] = '\0';
-	return (dest);
+	dup2(fd, 1);
+	close(fd);
 }

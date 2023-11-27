@@ -1,31 +1,33 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strdup.c                                        :+:      :+:    :+:   */
+/*   free_token.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mgur <mgur@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/09/07 04:13:54 by mgur              #+#    #+#             */
-/*   Updated: 2023/09/07 04:13:56 by mgur             ###   ########.fr       */
+/*   Created: 2023/09/07 04:11:46 by mgur              #+#    #+#             */
+/*   Updated: 2023/09/07 04:11:49 by mgur             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-char	*ft_strdup(const char *str)
+void	free_token(void)
 {
-	int		i;
-	char	*dest;
+	t_token		*tmp;
+	t_token		*token;
 
-	dest = (char *)malloc((ft_strlen(str) + 1) * (sizeof(char)));
-	if (!dest)
-		return (NULL);
-	i = 0;
-	while (str[i])
+	token = g_ms.token;
+	while (token)
 	{
-		dest[i] = str[i];
-		i++;
+		free(token->str);
+		token = token->next;
 	}
-	dest[i] = '\0';
-	return (dest);
+	token = g_ms.token;
+	while (token)
+	{
+		tmp = token;
+		token = token->next;
+		free(tmp);
+	}
 }

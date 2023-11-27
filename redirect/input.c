@@ -1,31 +1,38 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strdup.c                                        :+:      :+:    :+:   */
+/*   input.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mgur <mgur@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/09/07 04:13:54 by mgur              #+#    #+#             */
-/*   Updated: 2023/09/07 04:13:56 by mgur             ###   ########.fr       */
+/*   Created: 2023/09/07 04:12:33 by mgur              #+#    #+#             */
+/*   Updated: 2023/09/07 04:12:35 by mgur             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-char	*ft_strdup(const char *str)
+void	input(char *file, int cntrl)
 {
-	int		i;
-	char	*dest;
+	int	fd;
 
-	dest = (char *)malloc((ft_strlen(str) + 1) * (sizeof(char)));
-	if (!dest)
-		return (NULL);
-	i = 0;
-	while (str[i])
+	fd = open(file, O_RDONLY);
+	if (cntrl == 1)
 	{
-		dest[i] = str[i];
-		i++;
+		if (fd == -1)
+		{
+			g_ms.ignore = TRUE;
+			return (no_file_err(file));
+		}
+		if (g_ms.heredoc_fd[0] > 2)
+			dup2(fd, g_ms.heredoc_fd[0]);
 	}
-	dest[i] = '\0';
-	return (dest);
+	else
+	{
+		if (fd == -1)
+			no_file_err(file);
+		dup2(fd, 0);
+	}
+	if (fd != -1)
+		close(fd);
 }

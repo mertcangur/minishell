@@ -1,31 +1,34 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strdup.c                                        :+:      :+:    :+:   */
+/*   cd.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mgur <mgur@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/09/07 04:13:54 by mgur              #+#    #+#             */
-/*   Updated: 2023/09/07 04:13:56 by mgur             ###   ########.fr       */
+/*   Created: 2023/09/07 04:09:31 by mgur              #+#    #+#             */
+/*   Updated: 2023/09/07 08:17:11 by mgur             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-char	*ft_strdup(const char *str)
+void	builtin_cd(char **input, int cntrl)
 {
-	int		i;
-	char	*dest;
+	char	*home;
 
-	dest = (char *)malloc((ft_strlen(str) + 1) * (sizeof(char)));
-	if (!dest)
-		return (NULL);
-	i = 0;
-	while (str[i])
+	if (input[1] != NULL && strcmp(input[1], "~") != 0)
 	{
-		dest[i] = str[i];
-		i++;
+		errno = 1;
+		if (chdir(input[1]) != 0)
+			perror("minishell ");
 	}
-	dest[i] = '\0';
-	return (dest);
+	else
+	{
+		home = getenv("HOME");
+		if (home && *home)
+			if (chdir(home))
+				perror("minishell ");
+	}
+	if (cntrl == 0)
+		exit(errno);
 }
